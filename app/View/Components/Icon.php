@@ -6,6 +6,8 @@ use Illuminate\View\Component;
 
 class Icon extends Component
 {
+    public $src;
+
     /**
      * Create a new component instance.
      *
@@ -13,7 +15,7 @@ class Icon extends Component
      */
     public function __construct($src)
     {
-        $this->src = $src;
+        $this->src = asset("icons/" . $src);
     }
 
     /**

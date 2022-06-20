@@ -8,9 +8,8 @@
 </head>
 <body>
     @php
-        $icon = "logo.svg"   
+        $icon = "logo.svg"
     @endphp
-    <x-icon  src="$icon" />
-    <x-ui.button />
+    <x-icon :src="$icon" />
 </body>
 </html>
