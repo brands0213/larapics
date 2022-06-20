@@ -19,7 +19,7 @@ class ImagePolicy
      */
     public function viewAny(User $user)
     {
-        //
+       return true;
     }
 
     /**
@@ -42,7 +42,7 @@ class ImagePolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
