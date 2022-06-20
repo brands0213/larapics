@@ -1,0 +1,3 @@
+<div>
+   Icon {{ $src }}
+</div>
