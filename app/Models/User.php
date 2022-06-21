@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -40,16 +41,73 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'role' => Role::class
     ];
+
+    public function updateSettings($data)
+    {
+        $this->updateSocialProfile($data['social']);
+    }
+
+    protected function updateSocialProfile($social)
+    {
+        Social::updateOrCreate(
+            ['user_id' => $this->id],
+            $social
+        );
+    }
 
     public function images()
     {
         return $this->hasMany(Image::class);
     }
 
+    public function social()
+    {
+        return $this->hasOne(Social::class)->withDefault(); // , "id_user", "_id");
+    }
+    
+    // public function recentSocial()
+    // {
+    //     return $this->hasOne(Social::class)->latestOfMany();
+    // }
+    
+    // public function oldestSocial()
+    // {
+    //     return $this->hasOne(Social::class)->oldestOfMany();
+    // }
+    
+    // public function socialPriority()
+    // {
+    //     return $this->hasOne(Social::class)->ofMany('priority', 'min');
+    // }
+
     public function getImagesCount()
     {
         $imagesCount = $this->images()->published()->count();
-        return $imagesCount .' '. str()->plural('image', $imagesCount);
+        return $imagesCount . ' ' . str()->plural('image', $imagesCount);
     }
 }
+/*
+# Assigning one to one relationship 
+## 1st way
+$user = User::first()
+$social = new Social
+$social->instagram = "https://instagram.com/test"
+$social->user_id = $user->id
+$social->save()
+
+## 2nd way
+$user = User::first()
+$social = new Social
+$social->instagram = "https://instagram.com/test2"
+$social->website = "https://mywebsite.test"
+$social->user()->associate($user)
+$social->save()
+
+## 3rd way
+$user = User::first()
+$social = new Social
+$social->instagram = "https://instagram.com/test3"
+$user->social()->save($social)
+*/

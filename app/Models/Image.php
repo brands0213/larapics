@@ -6,6 +6,7 @@ use App\Enums\Role;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Social;
 
 class Image extends Model
 {
@@ -13,14 +14,14 @@ class Image extends Model
 
     protected $fillable = ['title', 'file', 'dimension', 'user_id', 'slug'];
 
-    public function uploadDate()
-    {
-        return $this-> created_at->diffForHumans();
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function uploadDate()
+    {
+        return $this->created_at->diffForHumans();
     }
 
     public static function makeDirectory()
@@ -43,10 +44,10 @@ class Image extends Model
 
     public function scopeVisibleFor($query, User $user)
     {
-        if($user->role === Role::Admin || $user->role === Role::Editor){
+        if ($user->role === Role::Admin || $user->role === Role::Editor) {
             return;
         }
-
+        
         $query->where("user_id", $user->id);
     }
 
@@ -90,7 +91,7 @@ class Image extends Model
                 $image->is_published = true;
             }
         });
-
+        
         static::deleted(function ($image) {
             Storage::delete($image->file);
         });

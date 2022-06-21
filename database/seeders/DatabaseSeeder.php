@@ -26,6 +26,12 @@ class DatabaseSeeder extends Seeder
                 'file' => $image,
                 'dimension' => Image::getDimension($image)
             ]);
+
+            
         }
+
+        User::find([2, 4, 6])->each(function($user){
+            $user->social()->save(Social::factory()->make());
+        });
     }
 }
